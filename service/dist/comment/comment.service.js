@@ -17,7 +17,10 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
 const comment_entity_1 = require("./entities/comment.entity");
 const response_dto_1 = require("../dto/response.dto");
-const auth_1 = require("ibm-watson/auth");
+const { IamAuthenticator } = require('ibm-watson/auth');
+const Fs = require('fs');
+const TextToSpeechV1 = require('ibm-watson/text-to-speech/v1');
+const ConfigWatson = require('../../config/watson.js');
 let CommentService = class CommentService {
     constructor(commentRepository) {
         this.commentRepository = commentRepository;
@@ -27,17 +30,19 @@ let CommentService = class CommentService {
     }
     async create(data) {
         let comment = new comment_entity_1.Comment();
+        console.log(ConfigWatson);
         if (!data.content) {
             throw new common_1.BadRequestException({
                 status: false,
-                message: "Não é possivel cadasddtrar sem informar o comentario"
+                message: "Não é possivel cadastrar sem informar o comentario"
             });
         }
         comment.content = data.content;
         return this.commentRepository.save(comment)
-            .then((result) => {
-            this.trasnlation();
+            .then(async (result) => {
+            const translation = await this.translation(result);
             return {
+                return: translation,
                 status: true,
                 message: "Conteúdo cadastrado com sucesso!!!"
             };
@@ -49,17 +54,15 @@ let CommentService = class CommentService {
             };
         });
     }
-    async trasnlation() {
-        const TextToSpeechV1 = require('ibm-watson/text-to-speech/v1');
-        const fs = require('fs');
+    async translation(data) {
         const textToSpeech = new TextToSpeechV1({
-            authenticator: new auth_1.IamAuthenticator({
-                apikey: 'htvoYJ6FQnd-Vzx-tPMxSira0c6up2La1TAGDyjUcevD',
+            authenticator: new IamAuthenticator({
+                apikey: ConfigWatson.api_key,
             }),
-            serviceUrl: 'https://api.us-south.text-to-speech.watson.cloud.ibm.com/instances/c2fb2eac-396f-47d1-b470-783640bccc4d',
+            serviceUrl: ConfigWatson.url,
         });
         const synthesizeParams = {
-            text: 'Que merda deu certo esta bosta',
+            text: data.content,
             accept: 'audio/mp3',
             voice: 'pt-BR_IsabelaV3Voice',
         };
@@ -67,7 +70,8 @@ let CommentService = class CommentService {
             .synthesize(synthesizeParams)
             .then(response => {
             const audio = response.result;
-            audio.pipe(fs.createWriteStream('hello_world.mp3'));
+            console.log(data);
+            audio.pipe(Fs.createWriteStream(`../client/public/audio/${data.id}.mp3`));
         })
             .catch(err => {
             console.log('error:', err);

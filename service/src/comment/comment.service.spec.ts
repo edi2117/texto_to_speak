@@ -18,7 +18,7 @@ describe('CommentService', () => {
 
   describe("createComment", () => {
     it('Should be throw if comment not provided',async () => {
-      await expect(service.createComment({})).toBeDefined();
+      await expect(service.create({})).toBeDefined();
     })
   });
 });

@@ -1,0 +1,54 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+html,
+body,
+#__next {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  height: 100%;
+  font-family: 'Montserrat', sans-serif;
+  vertical-align: baseline;
+  background-color: #ffffff;
+};
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+};
+
+button {
+  cursor: pointer;
+}
+
+@media (max-width: 1080px) {
+  html {
+    font-size: 93.75%;
+  }
+}
+
+@media (max-width: 720px) {
+  html {
+    font-size: 87.5%;
+  }
+}
+
+.container {
+  height: 100%;
+  margin-right: 30px;
+  margin-left: 30px;
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+  }
+}
