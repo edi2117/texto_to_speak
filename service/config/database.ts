@@ -1,11 +1,7 @@
-module.exports = {
-  dialect: 'mysql',
-  host: 'SG-GaioMySQLDB-2790-master.servers.mongodirector.com',
-  username: 'gaio',
-  password: 'Gaio@12345',
-  database: 'GaioDB',
-  define: {
-    timestamps: true,
-    underscored: true,
-  }
-};
+export const Config = {
+  host:     '172.22.13.128',
+  port:     3306,
+  username: 'root',
+  password: 'password',
+  database: 'app_development',
+}
