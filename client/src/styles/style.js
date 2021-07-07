@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css }  from 'styled-components';
 
 export const Wrapper = styled.main `
   width: 100%;
@@ -40,11 +40,18 @@ export const WrapperPlay = styled.div`
     margin-top: 10px;
     border: 1px solid lightgray;
     border-radius: 5px;
+    flex-wrap: wrap;    
+  }
+
+  audio {
+    height: 30px;
+    border-radius: 2px;
   }
   
   p {
     margin: 0 10px;
-    text-align: right;
+    text-align: center;
+    max-width: 350px;
   }
   
   @media (min-width: 600px) {

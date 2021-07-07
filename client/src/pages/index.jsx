@@ -1,32 +1,35 @@
 import Button from 'components/Button/Button';
 import TextArea from 'components/TextArea/TextArea';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { WrapperConverter, WrapperPlay, Wrapper } from 'styles/style';
 import { api } from 'service/api';
 
 const Home = () => {
 
-  const audio = useRef();
 
-  const [comments, setCommets] = useState();
+  const [comments, setCommets]    = useState();
 
-  useEffect(async () => {
+  const getAll = async () => {
     const res = await api.get(`/comment/list`);
+
     setCommets(res?.data);
-  }, [comments])
+  }
+  useEffect(async () => {
+    getAll();
+  }, [])
   
   const submit = async (e) => {
     e.preventDefault(); 
-
-    let content = e?.target?.text?.value; 
-
+    let response = [];
+    let content  = e?.target?.text?.value;
+    e.target.reset();
     const res = await api.post(`/comment/add`, {content});
-  };
-
-  const play = () => {
-    audio?.current?.play();
+  
+    setTimeout(() => {
+      setCommets(response.concat(comments, res?.data?.return));
+      
+    }, 2000)
   }
-
   return (
     <Wrapper>
       <div>
@@ -42,13 +45,11 @@ const Home = () => {
             comments?.map((comment,key) => (
               <div key={comment?.id}>
                 <p>{comment?.content}</p>
-                <audio
-                  ref={audio} 
+                
+                <audio 
+                  controls
                   src={`/audio/${comment?.id}.mp3`}
                 />
-                <Button size="small" onClick={() => play()}>
-                  <img src="/play.png" alt="Reproduzir comentário" />
-                </Button>
               </div>
             ))
           }
